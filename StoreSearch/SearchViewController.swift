@@ -25,6 +25,8 @@ class SearchViewController: UIViewController {
     var hasSearched = false
     var isLoading = false
     
+    var dataTask : URLSessionDataTask?
+    
     override func viewDidLoad() {
         super.viewDidLoad()
 
@@ -43,7 +45,7 @@ class SearchViewController: UIViewController {
     //MARK:- Helper Methods
     func iTunesURL(searchText: String) -> URL {
         let encodedText = searchText.addingPercentEncoding(withAllowedCharacters: CharacterSet.urlQueryAllowed)!
-        let urlString = String(format: "https://itunes.apple.com/search?term=%@&limit=200", encodedText)
+        let urlString = String(format: "https://itunes.apple.com/search?term=%@&limit=1200", encodedText)
         let url = URL(string: urlString)
         return url!
     }
@@ -78,7 +80,7 @@ extension SearchViewController: UISearchBarDelegate {
     func searchBarSearchButtonClicked(_ searchBar: UISearchBar) {
         if !searchBar.text!.isEmpty {
             searchBar.resignFirstResponder()
-            
+            dataTask?.cancel()
             isLoading = true
             tableView.reloadData()
             
@@ -89,7 +91,7 @@ extension SearchViewController: UISearchBarDelegate {
             //2
             let session = URLSession.shared
             //3
-            let dataTask = session.dataTask(with: url, completionHandler: {
+            dataTask = session.dataTask(with: url, completionHandler: {
                 data, response, error in
                 // 4
                 if let error = error {
@@ -118,7 +120,7 @@ extension SearchViewController: UISearchBarDelegate {
                 
             })
             //5
-            dataTask.resume()
+            dataTask?.resume()
         }
     }
     
