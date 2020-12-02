@@ -15,21 +15,43 @@
                         <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
+                            <searchBar contentMode="redraw" placeholder="App name, song, album, e-book" translatesAutoresizingMaskIntoConstraints="NO" id="c26-5a-324">
+                                <rect key="frame" x="0.0" y="0.0" width="375" height="57"/>
+                                <textInputTraits key="textInputTraits"/>
+                                <connections>
+                                    <outlet property="delegate" destination="BYZ-38-t0r" id="zMN-xQ-fzE"/>
+                                </connections>
+                            </searchBar>
                             <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" keyboardDismissMode="interactive" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="28" sectionFooterHeight="28" translatesAutoresizingMaskIntoConstraints="NO" id="Pfq-eM-dlS">
-                                <rect key="frame" x="0.0" y="56" width="375" height="611"/>
+                                <rect key="frame" x="0.0" y="101" width="375" height="566"/>
                                 <color key="backgroundColor" systemColor="systemBackgroundColor" cocoaTouchSystemColor="whiteColor"/>
                                 <connections>
                                     <outlet property="dataSource" destination="BYZ-38-t0r" id="c8r-XF-XQC"/>
                                     <outlet property="delegate" destination="BYZ-38-t0r" id="4xr-6L-iGC"/>
                                 </connections>
                             </tableView>
-                            <searchBar contentMode="redraw" placeholder="App name, song, album, e-book" translatesAutoresizingMaskIntoConstraints="NO" id="c26-5a-324">
-                                <rect key="frame" x="0.0" y="0.0" width="375" height="56"/>
-                                <textInputTraits key="textInputTraits"/>
-                                <connections>
-                                    <outlet property="delegate" destination="BYZ-38-t0r" id="zMN-xQ-fzE"/>
-                                </connections>
-                            </searchBar>
+                            <navigationBar contentMode="scaleToFill" id="Zr3-gk-4IZ">
+                                <rect key="frame" x="0.0" y="57" width="375" height="44"/>
+                                <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMaxY="YES"/>
+                                <items>
+                                    <navigationItem id="vzQ-YC-Sre">
+                                        <nil key="title"/>
+                                        <segmentedControl key="titleView" opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="top" segmentControlStyle="bar" selectedSegmentIndex="0" id="sJq-wv-8t7">
+                                            <rect key="frame" x="8" y="5.5" width="359" height="33"/>
+                                            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                            <segments>
+                                                <segment title="All"/>
+                                                <segment title="Music"/>
+                                                <segment title="Software"/>
+                                                <segment title="E-Books"/>
+                                            </segments>
+                                            <connections>
+                                                <action selector="segmentedChanged:" destination="BYZ-38-t0r" eventType="valueChanged" id="tHi-5z-7Hm"/>
+                                            </connections>
+                                        </segmentedControl>
+                                    </navigationItem>
+                                </items>
+                            </navigationBar>
                         </subviews>
                         <color key="backgroundColor" systemColor="systemBackgroundColor" cocoaTouchSystemColor="whiteColor"/>
                         <constraints>
@@ -37,14 +59,16 @@
                             <constraint firstItem="c26-5a-324" firstAttribute="leading" secondItem="6Tk-OE-BBY" secondAttribute="leading" id="6zI-bd-Gvo"/>
                             <constraint firstItem="Pfq-eM-dlS" firstAttribute="leading" secondItem="6Tk-OE-BBY" secondAttribute="leading" id="Ahh-uh-glk"/>
                             <constraint firstItem="Pfq-eM-dlS" firstAttribute="bottom" secondItem="6Tk-OE-BBY" secondAttribute="bottom" id="CLj-C4-YH2"/>
+                            <constraint firstItem="Pfq-eM-dlS" firstAttribute="top" secondItem="Zr3-gk-4IZ" secondAttribute="bottom" id="SV2-Qx-uh9"/>
+                            <constraint firstItem="Zr3-gk-4IZ" firstAttribute="top" secondItem="c26-5a-324" secondAttribute="bottom" id="Y4R-k9-5qC"/>
                             <constraint firstItem="c26-5a-324" firstAttribute="top" secondItem="6Tk-OE-BBY" secondAttribute="top" id="blS-Ez-2bY"/>
-                            <constraint firstItem="Pfq-eM-dlS" firstAttribute="top" secondItem="c26-5a-324" secondAttribute="bottom" id="gor-Rb-UED"/>
                             <constraint firstItem="Pfq-eM-dlS" firstAttribute="trailing" secondItem="6Tk-OE-BBY" secondAttribute="trailing" id="kcx-qx-oM9"/>
                         </constraints>
                         <viewLayoutGuide key="safeArea" id="6Tk-OE-BBY"/>
                     </view>
                     <connections>
                         <outlet property="searchBar" destination="c26-5a-324" id="1MY-td-wZk"/>
+                        <outlet property="segmentedControl" destination="sJq-wv-8t7" id="lE4-HD-1Hv"/>
                         <outlet property="tableView" destination="Pfq-eM-dlS" id="BSZ-23-FTd"/>
                     </connections>
                 </viewController>
