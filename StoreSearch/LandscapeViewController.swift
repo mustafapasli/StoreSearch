@@ -13,6 +13,7 @@ class LandscapeViewController: UIViewController {
   var searchResults = [SearchResult]()
   
   private var firstTime = true
+  private var downloads = [URLSessionDownloadTask]()
   
   @IBOutlet weak var scrollView: UIScrollView!
   @IBOutlet weak var pageControl: UIPageControl!
@@ -104,6 +105,7 @@ class LandscapeViewController: UIViewController {
       button.setBackgroundImage(UIImage(named: "LandscapeButton"), for: .normal)
       //2
       button.frame = CGRect(x: x + paddingHorz, y: marginY + CGFloat(row) * itemHeight + paddingVert, width: buttonWidth, height: buttonHeight)
+      downloadImage(for: result, andPlaceOn: button)
       //3
       scrollView.addSubview(button)
       //4
@@ -128,6 +130,25 @@ class LandscapeViewController: UIViewController {
     pageControl.currentPage = 0
   }
   
+  private func downloadImage(for searchResult: SearchResult, andPlaceOn button: UIButton) {
+    if let url = URL(string: searchResult.imageSmall) {
+      let task = URLSession.shared.downloadTask(with: url) {
+        [weak button] url, response, error in
+        if error == nil, let url = url,
+          let data = try? Data(contentsOf: url),
+          let image = UIImage(data: data) {
+          DispatchQueue.main.async {
+            if let button = button {
+              button.setImage(image, for: .normal)
+            }
+          }
+        }
+      }
+      task.resume()
+      downloads.append(task)
+    }
+  }
+  
   //MARK:- Actions
   @IBAction func pageChanged(_ sender: UIPageControl) {
     UIView.animate(withDuration: 0.3, delay: 0, options: [.curveEaseInOut], animations: {
@@ -135,6 +156,13 @@ class LandscapeViewController: UIViewController {
     },
     completion: nil)
     
+  }
+  
+  deinit {
+    print("deinit \(self)")
+    for task in downloads {
+      task.cancel()
+    }
   }
 }
 
