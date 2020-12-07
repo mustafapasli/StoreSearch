@@ -10,64 +10,120 @@ import UIKit
 
 class SearchViewController: UIViewController {
     
-    struct TableView {
-        struct CellIdentifiers {
-            static let searchResultCell = "SearchResultCell"
-            static let nothingFoundCell = "NothingFoundCell"
-            static let loadingCell = "LoadingCell"
-        }
+  struct TableView {
+    struct CellIdentifiers {
+      static let searchResultCell = "SearchResultCell"
+      static let nothingFoundCell = "NothingFoundCell"
+      static let loadingCell = "LoadingCell"
     }
+  }
 
-    @IBOutlet weak var segmentedControl: UISegmentedControl!
-    @IBOutlet weak var searchBar: UISearchBar!
-    @IBOutlet weak var tableView: UITableView!
+  @IBOutlet weak var segmentedControl: UISegmentedControl!
+  @IBOutlet weak var searchBar: UISearchBar!
+  @IBOutlet weak var tableView: UITableView!
+  
+  var searchResults = [SearchResult]()
+  var hasSearched = false
+  var isLoading = false
+  
+  var dataTask : URLSessionDataTask?
+  
+  var landscapeVC: LandscapeViewController?
     
-    var searchResults = [SearchResult]()
-    var hasSearched = false
-    var isLoading = false
-    
-    var dataTask : URLSessionDataTask?
-    
-    override func viewDidLoad() {
-        super.viewDidLoad()
+  override func viewDidLoad() {
+    super.viewDidLoad()
 
-        var cellNib = UINib(nibName: TableView.CellIdentifiers.searchResultCell, bundle: nil)
-        tableView.register(cellNib, forCellReuseIdentifier: "SearchResultCell")
-        
-        cellNib = UINib(nibName: TableView.CellIdentifiers.nothingFoundCell, bundle: nil)
-        tableView.register(cellNib, forCellReuseIdentifier: TableView.CellIdentifiers.nothingFoundCell)
-        
-        cellNib = UINib(nibName: TableView.CellIdentifiers.loadingCell, bundle: nil)
-        tableView.register(cellNib, forCellReuseIdentifier: TableView.CellIdentifiers.loadingCell)
-        
-        searchBar.becomeFirstResponder()
-        
-        let segmentColor = UIColor(red: 10/255, green: 80/255, blue: 80/255, alpha: 1)
-        let selectedTextAttributes = [NSAttributedString.Key.foregroundColor: UIColor.white]
-        let normalTextAttributes = [NSAttributedString.Key.foregroundColor: segmentColor]
-        segmentedControl.selectedSegmentTintColor = segmentColor
-        
-        segmentedControl.setTitleTextAttributes(normalTextAttributes, for: .normal)
-        segmentedControl.setTitleTextAttributes(selectedTextAttributes, for: .selected)
-        segmentedControl.setTitleTextAttributes(selectedTextAttributes, for: .highlighted)
-        
+    var cellNib = UINib(nibName: TableView.CellIdentifiers.searchResultCell, bundle: nil)
+    tableView.register(cellNib, forCellReuseIdentifier: "SearchResultCell")
+    
+    cellNib = UINib(nibName: TableView.CellIdentifiers.nothingFoundCell, bundle: nil)
+    tableView.register(cellNib, forCellReuseIdentifier: TableView.CellIdentifiers.nothingFoundCell)
+    
+    cellNib = UINib(nibName: TableView.CellIdentifiers.loadingCell, bundle: nil)
+    tableView.register(cellNib, forCellReuseIdentifier: TableView.CellIdentifiers.loadingCell)
+    
+    searchBar.becomeFirstResponder()
+    
+    let segmentColor = UIColor(red: 10/255, green: 80/255, blue: 80/255, alpha: 1)
+    let selectedTextAttributes = [NSAttributedString.Key.foregroundColor: UIColor.white]
+    let normalTextAttributes = [NSAttributedString.Key.foregroundColor: segmentColor]
+    segmentedControl.selectedSegmentTintColor = segmentColor
+    
+    segmentedControl.setTitleTextAttributes(normalTextAttributes, for: .normal)
+    segmentedControl.setTitleTextAttributes(selectedTextAttributes, for: .selected)
+    segmentedControl.setTitleTextAttributes(selectedTextAttributes, for: .highlighted)
+      
+  }
+  
+  override func willTransition(to newCollection: UITraitCollection, with coordinator: UIViewControllerTransitionCoordinator) {
+    super.willTransition(to: newCollection, with: coordinator)
+    switch newCollection.verticalSizeClass {
+    case .compact:
+      showLandscape(with: coordinator)
+    case .regular, .unspecified:
+      hideLandscape(with: coordinator)
+    @unknown default:
+      fatalError()
     }
-    //MARK:- Helper Methods
-    func iTunesURL(searchText: String, category: Int) -> URL {
-        
-        let kind: String
-        switch category {
-        case 1: kind = "musicTrack"
-        case 2: kind = "software"
-        case 3: kind = "ebook"
-        default: kind = ""
+  }
+  //MARK:- Helper Methods
+  func iTunesURL(searchText: String, category: Int) -> URL {
+      
+    let kind: String
+    switch category {
+    case 1: kind = "musicTrack"
+    case 2: kind = "software"
+    case 3: kind = "ebook"
+    default: kind = ""
+    }
+    
+    let encodedText = searchText.addingPercentEncoding(withAllowedCharacters: CharacterSet.urlQueryAllowed)!
+    let urlString = String(format: "https://itunes.apple.com/search?term=%@&limit=200&entity=\(kind)", encodedText)
+    let url = URL(string: urlString)
+    return url!
+  }
+  
+  func showLandscape(with coordinator: UIViewControllerTransitionCoordinator) {
+    //1
+    guard landscapeVC == nil else { return }
+    //2
+    landscapeVC = storyboard!.instantiateViewController(withIdentifier: "LandscapeViewController") as?
+    LandscapeViewController
+    
+    if let controller = landscapeVC {
+      controller.searchResults = searchResults
+      //3
+      controller.view.frame = view.bounds
+      //4
+      view.addSubview(controller.view)
+      addChild(controller)
+      //
+      coordinator.animate(alongsideTransition: { _ in
+        controller.view.alpha = 1
+        self.searchBar.resignFirstResponder()
+      }, completion: { _ in
+        controller.didMove(toParent: self)
+      })
+      
+    }
+  }
+  
+  func hideLandscape(with coordinator: UIViewControllerTransitionCoordinator) {
+    if let controller = landscapeVC {
+      controller.willMove(toParent: nil)
+      //
+      coordinator.animate(alongsideTransition: { _ in
+        controller.view.alpha = 0
+        if self.presentedViewController != nil {
+          self.dismiss(animated: true, completion: nil)
         }
-        
-        let encodedText = searchText.addingPercentEncoding(withAllowedCharacters: CharacterSet.urlQueryAllowed)!
-        let urlString = String(format: "https://itunes.apple.com/search?term=%@&limit=200&entity=\(kind)", encodedText)
-        let url = URL(string: urlString)
-        return url!
+      }, completion: { _ in
+        controller.view.removeFromSuperview()
+        controller.removeFromParent()
+        self.landscapeVC = nil
+      })
     }
+  }
     
     @IBAction func segmentedChanged(_ sender: UISegmentedControl) {
         performSearch()

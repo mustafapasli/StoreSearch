@@ -27,6 +27,13 @@ class DetailViewController: UIViewController {
     transitioningDelegate = self
   }
   
+  enum AnimationStyle {
+    case slide
+    case fade
+  }
+  
+  var dissmissStyle = AnimationStyle.fade
+  
   override func viewDidLoad() {
     super.viewDidLoad()
     
@@ -52,6 +59,7 @@ class DetailViewController: UIViewController {
   
   //MARK:- Actions
   @IBAction func close() {
+    dissmissStyle = .slide
     dismiss(animated: true, completion: nil)
   }
   @IBAction func openInStore() {
@@ -109,7 +117,12 @@ extension DetailViewController: UIViewControllerTransitioningDelegate {
   }
   
   func animationController(forDismissed dismissed: UIViewController) -> UIViewControllerAnimatedTransitioning? {
-    return SlideOutAnimationController()
+    switch dissmissStyle {
+    case .slide:
+      return SlideOutAnimationController()
+    case .fade:
+      return FadeOutAnimationController()
+    }
   }
   
 }
