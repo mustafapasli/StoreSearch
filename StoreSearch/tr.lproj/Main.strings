@@ -1,0 +1,36 @@
+
+/* Class = "UILabel"; text = "Genre:"; ObjectID = "00d-Da-FKd"; */
+"00d-Da-FKd.text" = "Tür:";
+
+/* Class = "UILabel"; text = "Artist Name"; ObjectID = "WIF-9f-Nzg"; */
+"WIF-9f-Nzg.text" = "Sanatçı Adı";
+
+/* Class = "UISearchBar"; placeholder = "App name, song, album, e-book"; ObjectID = "c26-5a-324"; */
+"c26-5a-324.placeholder" = "Uygulama adı, müzik, albüm, e-kitap";
+
+/* Class = "UILabel"; text = "Name"; ObjectID = "f55-qd-RQe"; */
+"f55-qd-RQe.text" = "Isim";
+
+/* Class = "UILabel"; text = "Genre Value"; ObjectID = "gHR-hA-4pv"; */
+"gHR-hA-4pv.text" = "Genre Value";
+
+/* Class = "UIButton"; normalTitle = "$9.99"; ObjectID = "n2j-HG-npf"; */
+"n2j-HG-npf.normalTitle" = "$9.99";
+
+/* Class = "UILabel"; text = "Type:"; ObjectID = "n76-lV-GzL"; */
+"n76-lV-GzL.text" = "Tür:";
+
+/* Class = "UILabel"; text = "Kind Value"; ObjectID = "pcZ-J1-VqY"; */
+"pcZ-J1-VqY.text" = "Kind Value";
+
+/* Class = "UISegmentedControl"; sJq-wv-8t7.segmentTitles[0] = "All"; ObjectID = "sJq-wv-8t7"; */
+"sJq-wv-8t7.segmentTitles[0]" = "Hepsi";
+
+/* Class = "UISegmentedControl"; sJq-wv-8t7.segmentTitles[1] = "Music"; ObjectID = "sJq-wv-8t7"; */
+"sJq-wv-8t7.segmentTitles[1]" = "Müzik";
+
+/* Class = "UISegmentedControl"; sJq-wv-8t7.segmentTitles[2] = "Software"; ObjectID = "sJq-wv-8t7"; */
+"sJq-wv-8t7.segmentTitles[2]" = "Uygulama";
+
+/* Class = "UISegmentedControl"; sJq-wv-8t7.segmentTitles[3] = "E-Books"; ObjectID = "sJq-wv-8t7"; */
+"sJq-wv-8t7.segmentTitles[3]" = "E-Kitaplar";
